@@ -1,0 +1,118 @@
+# ========================
+# USER
+# ========================
+
+type User {
+  id: ID!
+  fullname: String!
+  email: String!
+  password: String
+  phone: String
+  products: [Product]
+}
+
+input CreateUserInput {
+  fullname: String!
+  email: String!
+  password: String!
+  phone: String
+}
+
+input UpdateUserInput {
+  fullname: String
+  password: String
+  phone: String
+}
+
+# ========================
+# CATEGORY
+# ========================
+
+type Category {
+  id: ID!
+  name: String!
+  images: String
+  products: [Product]
+}
+
+input CreateCategoryInput {
+  name: String!
+  images: String
+}
+
+input UpdateCategoryInput {
+  name: String
+  images: String
+}
+
+# ========================
+# PRODUCT
+# ========================
+
+type Product {
+  id: ID!
+  title: String!
+  quantity: Int
+  description: String
+  price: Float!
+  owner: User!
+  categories: [Category]
+}
+
+input CreateProductInput {
+  title: String!
+  quantity: Int
+  description: String
+  price: Float!
+  ownerId: ID!
+  categoryIds: [ID!]
+}
+
+input UpdateProductInput {
+  title: String
+  quantity: Int
+  description: String
+  price: Float
+  categoryIds: [ID!]
+}
+
+# ========================
+# QUERY ROOT
+# ========================
+
+type Query {
+  # Users
+  users: [User]
+  user(id: ID!): User
+
+  # Categories
+  categories: [Category]
+  category(id: ID!): Category
+
+  # Products
+  products: [Product]
+  product(id: ID!): Product
+  productsSortedByPrice: [Product]
+  productsByCategory(categoryId: ID!): [Product]
+}
+
+# ========================
+# MUTATION ROOT
+# ========================
+
+type Mutation {
+  # Users
+  createUser(input: CreateUserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+
+  # Categories
+  createCategory(input: CreateCategoryInput!): Category!
+  updateCategory(id: ID!, input: UpdateCategoryInput!): Category!
+  deleteCategory(id: ID!): Boolean!
+
+  # Products
+  createProduct(input: CreateProductInput!): Product!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
+  deleteProduct(id: ID!): Boolean!
+}

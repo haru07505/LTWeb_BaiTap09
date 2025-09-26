@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Product Viewer</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<style>
+body {
+	padding: 20px;
+	background: #f9f9f9;
+}
+
+h1 {
+	margin-bottom: 20px;
+}
+
+.product-card {
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	padding: 15px;
+	margin-bottom: 15px;
+	background: #fff;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.category-select {
+	max-width: 300px;
+	margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="text-primary">Product Viewer</h1>
+
+		<h3>All Products (Sorted by Price)</h3>
+		<div id="products" class="row"></div>
+
+		<hr />
+
+		<h3>Products by Category</h3>
+		<select id="categorySelect" class="form-select category-select">
+			<option value="">-- Select category --</option>
+		</select>
+		<div id="productsByCat" class="row"></div>
+	</div>
+
+	<script>
+const GRAPHQL = '/graphql';
+
+async function gql(query, variables={}) {
+  const res = await fetch(GRAPHQL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables })
+  });
+  const j = await res.json();
+  if (j.errors) {
+    alert(j.errors.map(e => e.message).join(", "));
+    throw new Error(j.errors[0].message);
+  }
+  return j.data;
+}
+
+// load categories
+async function loadCategories() {
+  const q = `query { categories { id name } }`;
+  const d = await gql(q);
+  const sel = document.getElementById('categorySelect');
+  sel.innerHTML = '<option value="">-- Select category --</option>';
+  d.categories.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.id;
+    o.text = c.name;
+    sel.appendChild(o);
+  });
+}
+
+// render product cards
+function renderProducts(list, targetId) {
+  const el = document.getElementById(targetId);
+  el.innerHTML = '';
+  list.forEach(p => {
+    const div = document.createElement('div');
+    div.className = "col-md-4";
+    div.innerHTML = `
+      <div class="product-card">
+        <h5>${p.title} <span class="badge bg-success">$${p.price}</span></h5>
+        <p>${p.description || ''}</p>
+        <small><b>ID:</b> ${p.id}</small>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+// load products sorted
+async function loadProductsSorted() {
+  const q = `query { productsSortedByPrice { id title price description } }`;
+  const d = await gql(q);
+  renderProducts(d.productsSortedByPrice, 'products');
+}
+
+// load products by category
+async function loadProductsByCategory(catId) {
+  if (!catId) {
+    document.getElementById('productsByCat').innerHTML = '';
+    return;
+  }
+  const q = `query($cid:ID!){ productsByCategory(categoryId:$cid){ id title price description } }`;
+  const d = await gql(q, { cid: catId });
+  renderProducts(d.productsByCategory, 'productsByCat');
+}
+
+// event
+document.getElementById('categorySelect').addEventListener('change', e => {
+  loadProductsByCategory(e.target.value);
+});
+
+// init
+(async ()=>{
+  await loadCategories();
+  await loadProductsSorted();
+})();
+</script>
+</body>
+</html>
