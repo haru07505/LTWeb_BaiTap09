@@ -10,6 +10,6 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 	List<Product> findAllByOrderByPriceAsc();
 
-    @Query("select p from Product p join p.categories c where c.id = :catId")
+    @Query("select p from Product p where category.id = :catId")
     List<Product> findAllByCategoryId(@Param("catId") Long catId);
 }

@@ -19,9 +19,11 @@ public class Product {
 	private BigDecimal price;
 
 	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User owner;
+    @JoinColumn(name = "user_id")
+    private User owner;
 
-	@ManyToMany(mappedBy = "products")
-	private Set<Category> categories = new HashSet<>();
+    // Khóa ngoại tới Category
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

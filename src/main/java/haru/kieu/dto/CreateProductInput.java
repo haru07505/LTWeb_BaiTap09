@@ -1,7 +1,5 @@
 package haru.kieu.dto;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data
@@ -11,5 +9,5 @@ public class CreateProductInput {
 	private String description;
 	private Double price;
 	private String ownerId;
-	private List<String> categoryIds;
+	private Long categoryId;
 }

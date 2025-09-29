@@ -8,7 +8,7 @@ type User {
   email: String!
   password: String
   phone: String
-  products: [Product]
+  category: [Category]
 }
 
 input CreateUserInput {
@@ -56,7 +56,7 @@ type Product {
   description: String
   price: Float!
   owner: User!
-  categories: [Category]
+  category: Category
 }
 
 input CreateProductInput {
@@ -65,7 +65,7 @@ input CreateProductInput {
   description: String
   price: Float!
   ownerId: ID!
-  categoryIds: [ID!]
+  categoryId: ID
 }
 
 input UpdateProductInput {
@@ -73,7 +73,7 @@ input UpdateProductInput {
   quantity: Int
   description: String
   price: Float
-  categoryIds: [ID!]
+  categoryId: ID
 }
 
 # ========================

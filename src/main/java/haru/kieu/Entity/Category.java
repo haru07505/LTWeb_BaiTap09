@@ -1,7 +1,10 @@
 package haru.kieu.Entity;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.*;
 
@@ -17,7 +20,6 @@ public class Category {
 	@ManyToMany(mappedBy = "categories")
 	private Set<User> users = new HashSet<>();
 
-	@ManyToMany
-	@JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "product_id"))
-	private Set<Product> products = new HashSet<>();
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
 }

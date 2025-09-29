@@ -16,8 +16,6 @@ import haru.kieu.repository.UserRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Controller
 public class ProductController {
@@ -64,10 +62,10 @@ public class ProductController {
 		p.setPrice(BigDecimal.valueOf(input.getPrice()));
 		p.setOwner(owner);
 
-		if (input.getCategoryIds() != null) {
-			Set<Category> cats = input.getCategoryIds().stream()
-					.map(cid -> categoryRepo.findById(Long.valueOf(cid)).orElseThrow()).collect(Collectors.toSet());
-			p.setCategories(cats);
+		if (input.getCategoryId() != null) {
+			Category cat = categoryRepo.findById(Long.valueOf(input.getCategoryId()))
+		            .orElseThrow(() -> new RuntimeException("Category not found"));
+		    p.setCategory(cat);
 		}
 		return productRepo.save(p);
 	}
@@ -83,10 +81,10 @@ public class ProductController {
 			p.setDescription(input.getDescription());
 		if (input.getPrice() != null)
 			p.setPrice(BigDecimal.valueOf(input.getPrice()));
-		if (input.getCategoryIds() != null) {
-			Set<Category> cats = input.getCategoryIds().stream()
-					.map(cid -> categoryRepo.findById(Long.valueOf(cid)).orElseThrow()).collect(Collectors.toSet());
-			p.setCategories(cats);
+		if (input.getCategoryId() != null) {
+			Category cat = categoryRepo.findById(Long.valueOf(input.getCategoryId()))
+		            .orElseThrow(() -> new RuntimeException("Category not found"));
+		    p.setCategory(cat);
 		}
 		return productRepo.save(p);
 	}
