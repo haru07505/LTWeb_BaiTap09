@@ -155,7 +155,7 @@ async function loadCategoriesDropdown(){
   const d=await gql(q);
   const sel=document.getElementById("categorySelect");
   sel.innerHTML='<option value="">-- All Categories --</option>';
-  d.category.forEach(c=>{
+  d.categories.forEach(c=>{
     const o=document.createElement("option"); o.value=c.id; o.text=c.name; sel.appendChild(o);
   });
 }
